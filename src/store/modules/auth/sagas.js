@@ -17,7 +17,7 @@ export function* signIn({ payload }) {
     const { token, user } = response.data;
 
     if (user.provider) {
-      Alert.error(
+      Alert.alert(
         'Erro ao autenticar',
         'O usuário não pode ser um prestador de serviços.',
       );
@@ -31,7 +31,7 @@ export function* signIn({ payload }) {
 
     // history.push('/dashboard');
   } catch (err) {
-    Alert.error('Falha ao autenticar', 'Verifique seus dados');
+    Alert.alert('Falha ao autenticar', 'Verifique seus dados');
     yield put(signFailure());
   }
 }
@@ -44,12 +44,11 @@ export function* signUp({ payload }) {
       name,
       email,
       password,
-      provider: true,
     });
 
     // history.push('/');
   } catch (err) {
-    Alert.error('Falha ao cadastrar', 'Verifique seus dados');
+    Alert.alert('Falha ao cadastrar', 'Verifique seus dados');
     put(signFailure());
   }
 }
