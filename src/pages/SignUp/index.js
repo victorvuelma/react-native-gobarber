@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 
 import { signUpRequest } from '~/store/modules/auth/actions';
@@ -29,6 +29,8 @@ export default function SignUp() {
 
   const emailRef = useRef();
   const passwordRef = useRef();
+
+  const loading = useSelector(state => state.auth.loading);
 
   function handleSubmit() {
     dispatch(signUpRequest(name, email, password));
@@ -75,7 +77,9 @@ export default function SignUp() {
             onChangeText={setPassword}
           />
 
-          <SubmitButton onPress={handleSubmit}>Criar Conta</SubmitButton>
+          <SubmitButton loading={loading} onPress={handleSubmit}>
+            Criar Conta
+          </SubmitButton>
         </Form>
 
         <SignLink
