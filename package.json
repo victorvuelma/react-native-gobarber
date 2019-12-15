@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
+    "@terrysahaidak/react-native-devmenu": "^3.0.0",
     "axios": "^0.19.0",
     "immer": "^5.0.1",
     "prop-types": "^15.7.2",
