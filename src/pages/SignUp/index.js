@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Image } from 'react-native';
 
+import { useDispatch } from 'react-redux';
 import { useNavigation } from 'react-navigation-hooks';
 
-import logo from '~/assets/logo.png';
+import { signUpRequest } from '~/store/modules/auth/actions';
 
 import Background from '~/components/Background';
+
+import logo from '~/assets/logo.png';
 
 import {
   Container,
@@ -17,7 +20,19 @@ import {
 } from './styles';
 
 export default function SignUp() {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  function handleSubmit() {
+    dispatch(signUpRequest(name, email, password));
+  }
 
   return (
     <Background>
@@ -27,10 +42,13 @@ export default function SignUp() {
         <Form>
           <FormInput
             icon="person-outline"
-            keyboardType="email-address"
             autoCorrect={false}
             autoCapitalize="none"
             placeholder="Nome completo"
+            returnKeyType="next"
+            onSubmitEditing={() => emailRef.current.focus()}
+            value={name}
+            onChangeText={setName}
           />
 
           <FormInput
@@ -39,23 +57,33 @@ export default function SignUp() {
             autoCorrect={false}
             autoCapitalize="none"
             placeholder="Digite seu e-mail"
+            ref={emailRef}
+            returnKeyType="next"
+            onSubmitEditing={() => passwordRef.current.focus()}
+            value={email}
+            onChangeText={setEmail}
           />
 
           <FormInput
             icon="lock-outline"
             secureTextEntry
             placeholder="Sua senha secreta"
+            ref={passwordRef}
+            returnKeyType="send"
+            onSubmitEditing={handleSubmit}
+            value={password}
+            onChangeText={setPassword}
           />
 
-          <SubmitButton onPress={() => {}}>Acessar</SubmitButton>
+          <SubmitButton onPress={handleSubmit}>Criar Conta</SubmitButton>
         </Form>
 
         <SignLink
           onPress={() => {
-            navigation.navigate('SignUp');
+            navigation.navigate('SignIn');
           }}
         >
-          <SignLinkText>Criar conta gratuita</SignLinkText>
+          <SignLinkText>Já tenho conta</SignLinkText>
         </SignLink>
       </Container>
     </Background>
