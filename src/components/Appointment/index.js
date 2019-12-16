@@ -1,27 +1,64 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
+import PropTypes from 'prop-types';
+
+import { parseISO, formatRelative } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { Container, Left, Avatar, Info, Name, Time } from './styles';
 
-export default function Appointment() {
+export default function Appointment({ data, onCancel }) {
+  const dateParsed = useMemo(() => {
+    return formatRelative(parseISO(data.date), new Date(), {
+      locale: ptBR,
+      addSuffix: true,
+    });
+  }, [data.date]);
+
   return (
-    <Container>
+    <Container past={data.past}>
       <Left>
         <Avatar
-          source={{ uri: 'https://api.adorable.io/avatar/50/hello.png' }}
+          source={{
+            uri: data.provider.avatar
+              ? data.provider.avatar.url
+              : `https://api.adorable.io/avatar/50/${data.provider.name}.png`,
+          }}
         />
 
         <Info>
-          <Name>Victor Vuelma</Name>
-          <Time>em 3 horas</Time>
+          <Name>{data.provider.name}</Name>
+          <Time>{dateParsed}</Time>
         </Info>
       </Left>
 
-      <TouchableOpacity onPress={() => {}}>
-        <Icon name="event-busy" size={20} color="#f64c75" />
-      </TouchableOpacity>
+      {data.cancelable && !data.canceled_at && (
+        <TouchableOpacity onPress={onCancel}>
+          <Icon name="event-busy" size={20} color="#f64c75" />
+        </TouchableOpacity>
+      )}
     </Container>
   );
 }
+
+Appointment.propTypes = {
+  data: PropTypes.shape({
+    past: PropTypes.bool,
+    cancelable: PropTypes.bool,
+    date: PropTypes.string,
+    canceled_at: PropTypes.string,
+    provider: PropTypes.shape({
+      name: PropTypes.string,
+      avatar: PropTypes.shape({
+        url: PropTypes.string,
+      }),
+    }),
+  }).isRequired,
+  onCancel: PropTypes.func,
+};
+
+Appointment.defaultProps = {
+  onCancel: () => {},
+};
