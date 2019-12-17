@@ -10,7 +10,7 @@ import api from '~/services/api';
 import Background from '~/components/Background';
 import DateInput from '~/components/DateInput';
 
-import { Container } from './styles';
+import { Container, HourList, Hour, Title } from './styles';
 
 export default function SelectDateTime() {
   const navigation = useNavigation();
@@ -34,10 +34,30 @@ export default function SelectDateTime() {
     loadAvailable();
   }, [date, provider.id]);
 
+  function handleSelectHour(time) {
+    navigation.navigate('Confirm', {
+      provider,
+      time,
+    });
+  }
+
   return (
     <Background>
       <Container>
         <DateInput date={date} onChange={setDate} />
+
+        <HourList
+          date={hours}
+          keyExtractor={item => item.time}
+          renderItem={({ item }) => (
+            <Hour
+              onPress={() => handleSelectHour(item.value)}
+              enabled={item.available}
+            >
+              <Title>{item.time}</Title>
+            </Hour>
+          )}
+        />
       </Container>
     </Background>
   );
